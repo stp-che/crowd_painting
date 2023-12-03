@@ -1,0 +1,30 @@
+doctype html
+html
+  head
+    title CrowdPainting
+    meta name="viewport" content="width=device-width,initial-scale=1"
+    == csrf_meta_tags
+    == csp_meta_tag
+    == stylesheet_link_tag "application", "data-turbo-track": "reload"
+    == javascript_include_tag "application", "data-turbo-track": "reload", defer: true
+
+  body
+    nav class="navbar navbar-expand-lg bg-body-tertiary"
+      .container-fluid
+        a.navbar-brand href="/" Crowd Painting
+        button[ class="navbar-toggler" type="button" data-bs-toggle="collapse" 
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" 
+                aria-expanded="false" aria-label="Toggle navigation" ]
+          span.navbar-toggler-icon
+
+        #navbarSupportedContent class="collapse navbar-collapse"
+          ul class="navbar-nav me-auto mb-2 mb-lg-0"
+            li.nav-item
+              a class="nav-link" aria-current="page" href="/" Home
+            li.nav-item
+              a class="nav-link" aria-current="page" href="/abc" Abc
+
+    - flash.each do |type, msg|
+      div class="alert alert-info" = msg
+
+    == yield
