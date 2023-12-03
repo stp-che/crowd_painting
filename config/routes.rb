@@ -8,4 +8,6 @@ Rails.application.routes.draw do
 
   # Defines the root path route ("/")
   root "paintings#index"
+
+  resources :paintings, only: %i[index new create show]
 end

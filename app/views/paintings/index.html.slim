@@ -1,1 +1,14 @@
 h1 Paintings
+
+table.table
+  thead.table-light
+    tr
+      th Created
+      th Name
+      th Size
+  tbody.table-group-divider
+    - @paintings.each do |painting|
+      tr
+        td = painting.created_at
+        td = link_to_painting(painting)
+        td = painting_size(painting)
