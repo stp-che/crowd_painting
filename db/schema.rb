@@ -10,9 +10,41 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2023_11_27_191057) do
+ActiveRecord::Schema[7.1].define(version: 2023_12_02_220453) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "paintings", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "title"
+    t.integer "width", limit: 2, null: false
+    t.integer "height", limit: 2, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["user_id"], name: "index_paintings_on_user_id"
+  end
+
+  create_table "pixel_changes", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "painting_id", null: false
+    t.integer "row", limit: 2, null: false
+    t.integer "col", limit: 2, null: false
+    t.binary "color", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["painting_id", "created_at"], name: "index_pixel_changes_on_painting_id_and_created_at"
+    t.index ["user_id"], name: "index_pixel_changes_on_user_id"
+  end
+
+  create_table "pixels", force: :cascade do |t|
+    t.bigint "painting_id", null: false
+    t.integer "row", limit: 2, null: false
+    t.integer "col", limit: 2, null: false
+    t.binary "color", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["painting_id", "row", "col"], name: "index_pixels_on_painting_id_and_row_and_col", unique: true
+  end
 
   create_table "users", force: :cascade do |t|
     t.string "email", default: "", null: false

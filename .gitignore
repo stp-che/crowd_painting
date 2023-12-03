@@ -33,3 +33,6 @@
 
 # Ignore master key for decrypting credentials and more.
 /config/master.key
+
+# Ignore RSpec example_status_persistence_file_path
+/spec/examples.txt

@@ -58,8 +58,13 @@ interaction:
   psql:
     description: Run Postgres psql console
     service: postgres
-    default_args: crowdpainting_development
-    command: psql -h postgres -U postgres
+    default_args: crowd_painting_development
+    command: psql postgres://postgres:postgres@postgres:5432/crowd_painting_development
+
+  rspec:
+    description: Run app tests
+    service: rails
+    command: rspec
 
 provision:
   # We need the `|| true` part because some docker-compose versions
