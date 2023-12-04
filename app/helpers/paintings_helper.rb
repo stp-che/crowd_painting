@@ -8,4 +8,8 @@ module PaintingsHelper
   def painting_size(painting)
     "#{painting.width} x #{painting.height}"
   end
+
+  def painting_sizes_options
+    options_for_select Painting::SIZES.keys
+  end
 end

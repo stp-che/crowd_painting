@@ -1,5 +1,16 @@
 h1 Paintings
 
+form.row.g-3 action=paintings_path method="POST"
+  .col-auto
+    label.col-form-label Size:
+  .col-auto
+    = select_tag 'painting[size]', painting_sizes_options, class: 'form-select'
+  .col-auto
+    input#inputNewPaintingTitle.form-control[ 
+      type="text" class="form-control" placeholder="Title" name="painting[title]" ]
+  .col-auto
+    button type="submit" class="btn btn-primary mb-3" Create painting
+
 table.table
   thead.table-light
     tr
