@@ -1,0 +1,10 @@
+h2
+  | Painting 
+  = painting_title(@painting)
+
+#paintingEditor
+  table#paintingContent
+    - @painting.height.times do |row|
+      tr
+        - @painting.width.times do |col|
+          td.paintingPixel id="pixel-#{row+1}-#{col+1}"

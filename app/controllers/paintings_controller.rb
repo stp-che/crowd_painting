@@ -13,6 +13,15 @@ class PaintingsController < ApplicationController
     redirect_to paintings_path
   end
 
+  def show
+    @painting = Painting.find_by(id: params[:id])
+
+    unless @painting
+      redirect_to paintings_path
+      return
+    end
+  end
+
   private
 
   def create_params
