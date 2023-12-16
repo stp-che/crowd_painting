@@ -4,4 +4,18 @@ class PaintingsController < ApplicationController
   def index
     @paintings = Painting.all.order(created_at: :desc)
   end
+
+  def create
+    Paintings::Create.new.(current_user, create_params).or do |errors|
+      flash[:alert] = errors.values.join('; ')
+    end
+
+    redirect_to paintings_path
+  end
+
+  private
+
+  def create_params
+    params.require(:painting).permit(:size, :title)
+  end
 end

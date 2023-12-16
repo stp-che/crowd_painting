@@ -73,3 +73,5 @@ gem "cssbundling-rails", "~> 1.3"
 gem "jsbundling-rails", "~> 1.2"
 
 gem "slim", "~> 5.2"
+
+gem "dry-monads", "~> 1.6"

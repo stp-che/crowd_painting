@@ -1,0 +1,6 @@
+en:
+  operations:
+    paintings:
+      errors:
+        is_blank: is blank
+        wrong_size: wrong size
