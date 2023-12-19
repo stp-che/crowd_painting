@@ -4,7 +4,7 @@ module PaintingsHelper
   end
 
   def painting_title(painting)
-    return "##{painting.id}" if painting.title.blank?
+    return "##{ painting.id }" if painting.title.blank?
 
     painting.title
   end

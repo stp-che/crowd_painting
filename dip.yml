@@ -32,6 +32,12 @@ interaction:
     command: bundle
     compose_run_options: [ no-deps ]
 
+  dev:
+    service: web
+    compose:
+      run_options: [ service-ports, use-aliases ]
+    command: ./bin/dev
+
   rails:
     description: Run Rails commands
     service: rails

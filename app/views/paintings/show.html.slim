@@ -2,9 +2,21 @@ h2
   | Painting 
   = painting_title(@painting)
 
-#paintingEditor
-  table#paintingContent
-    - @painting.height.times do |row|
-      tr
-        - @painting.width.times do |col|
-          td.paintingPixel id="pixel-#{row+1}-#{col+1}"
+#paintingEditor data-controller="painting" data-action="mousedown->painting#dragStart mousemove->painting#drag mouseup->painting#dragStop mouseup@window->painting#dragStop"
+  #paintingContent
+    - (1..@painting.height).each do |row|
+      .paintingRow
+        - (1..@painting.width).each do |col|
+          - red = (255 * row / @painting.height.to_f).round
+          - blue = (255 * col / @painting.width.to_f).round
+          - shift = [red, blue].max
+          - color = [255+red-shift, 255-shift, 255+blue-shift]
+          - 3.times do |i|
+            - color[i] = 0 if color[i] < 0
+          - style = "background-color: rgb(#{color.join(',')})"
+          .paintingPixel[
+            id="pixel-#{ row }-#{ col }"
+            data-action="click->painting#clickPixel"
+            data-painting-row-param=row.to_s
+            data-painting-col-param=col.to_s
+            style=style ]

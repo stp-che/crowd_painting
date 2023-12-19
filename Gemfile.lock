@@ -113,6 +113,7 @@ GEM
     factory_bot_rails (6.4.2)
       factory_bot (~> 6.4)
       railties (>= 5.0.0)
+    ffi (1.16.3)
     globalid (1.2.1)
       activesupport (>= 6.1)
     i18n (1.14.1)
@@ -225,6 +226,16 @@ GEM
       rspec-support (~> 3.12)
     rspec-support (3.12.1)
     ruby2_keywords (0.0.5)
+    sass-rails (6.0.0)
+      sassc-rails (~> 2.1, >= 2.1.1)
+    sassc (2.4.0)
+      ffi (~> 1.9)
+    sassc-rails (2.1.2)
+      railties (>= 4.0.0)
+      sassc (>= 2.0)
+      sprockets (> 3.0)
+      sprockets-rails
+      tilt
     slim (5.2.0)
       temple (~> 0.10.0)
       tilt (>= 2.1.0)
@@ -278,6 +289,7 @@ DEPENDENCIES
   puma (>= 5.0)
   rails (~> 7.1.2)
   rspec-rails
+  sass-rails
   slim (~> 5.2)
   sprockets-rails
   stimulus-rails
