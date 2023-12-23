@@ -6,8 +6,7 @@ h2
   data-controller="painting"
   data-action="mousemove->painting#drag mouseup->painting#dragStop mouseup@window->painting#dragStop wheel->painting#zoom"
 ]
-  canvas#paintingContent[
-    width=@painting.width.to_s
-    height=@painting.height.to_s
-    data-action="mousedown->painting#dragStart"
-  ]
+  #paintingContent data-action="mousedown->painting#dragStart"
+    canvas width=@painting.width.to_s height=@painting.height.to_s data-action="mousemove->painting#moveCursor"
+
+    #paintingCursor

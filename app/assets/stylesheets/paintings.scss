@@ -3,24 +3,35 @@
   height: 600px;
   overflow: hidden;
   position: relative;
+
+  #paintingContent {
+    top: 0;
+    left: 0;
+    position: absolute;
+    display: inline-block;
+    cursor: pointer;
+
+    canvas {
+      top: 0;
+      left: 0;
+      position: absolute;
+    }
+
+    #paintingCursor {
+      display: inline-block;
+      visibility: hidden;
+      top: 0;
+      left: 0;
+      position: absolute;
+      height: 1px;
+      width: 1px;
+      border-width: 1px;
+      border-image-slice: 1;
+      border-style: solid;
+      box-sizing: border-box;
+      border-image-source: linear-gradient(to bottom right, rgba(50, 50, 50, 0.75), rgba(240, 240, 240, 0.75));
+    }
+  }
 }
 
-#paintingContent {
-  top: 0;
-  left: 0;
-  position: absolute;
-  padding: 1px;
-  display: inline-block;
 
-  .paintingRow {
-    display: flex;
-  }
-
-  .paintingPixel {
-    float: left;
-    width: 30px;
-    height: 30px;
-    border: 1px solid black;
-    margin: -1px 0 0 -1px;
-  }
-}
