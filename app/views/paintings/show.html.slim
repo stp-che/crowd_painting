@@ -4,9 +4,13 @@ h2
 
 #paintingEditor[
   data-controller="painting"
-  data-action="mousemove->painting#drag mouseup->painting#dragStop mouseup@window->painting#dragStop wheel->painting#zoom"
+  data-action="mousemove->painting#drag mouseup@window->painting#dragStop wheel->painting#zoom"
 ]
   #paintingContent data-action="mousedown->painting#dragStart"
-    canvas width=@painting.width.to_s height=@painting.height.to_s data-action="mousemove->painting#moveCursor"
+    canvas[
+      width=@painting.width.to_s
+      height=@painting.height.to_s
+      data-action="mousemove->painting#moveCursor click->painting#clickPixel"
+    ]
 
-    #paintingCursor
+    #paintingCursor data-action="click->painting#clickPixel"

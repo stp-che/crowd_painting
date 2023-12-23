@@ -8,6 +8,7 @@ const CURSOR_SELECTOR = "#paintingCursor"
 export default class extends Controller {
   initialize() {
     this.dragging = false
+    this.wasJustDragged = false
     this.scale = 1
     this.contentOffsetX = 0
     this.contentOffsetY = 0
@@ -17,6 +18,7 @@ export default class extends Controller {
     this.cursorPos = { row: 0, col: 0 }
     this.origWidth = this.canvasElem.width
     this.origHeight = this.canvasElem.height
+    this.currentColor = [0, 0, 0]
 
     this._initImage()
 
@@ -24,26 +26,29 @@ export default class extends Controller {
   }
 
   moveCursor(event) {
-    if (!this._cursorVisible()) {
+    let pos = this._getPixelByCoords(event.offsetX, event.offsetY)
+    if (pos != this.cursorPos) {
+      this.cursorPos = pos
+      if (this._cursorVisible()) {
+        this._adjustCursorPosition()
+      }
+    }
+  }
+
+  clickPixel(event) {
+    if (this.wasJustDragged) {
+      this.wasJustDragged = false
       return
     }
 
-    let pos = this._getPixel(event.offsetX, event.offsetY)
-    if (pos != this.cursorPos) {
-      this.cursorPos = pos
-      this._adjustCursorPosition()
-    }
+    this._changePixel(this.cursorPos, this.currentColor)
   }
 
-  clickPixel({ params }) {
-    console.log("click pixel", params.row, params.col)
-  }
-
-  dragStart() {
+  dragStart(event) {
     this.dragging = true
   }
 
-  dragStop() {
+  dragStop(event) {
     this.dragging = false
   }
 
@@ -56,6 +61,7 @@ export default class extends Controller {
     this.contentOffsetY = this.contentOffsetY + event.movementY
     this.contentElem.style.left = this.contentOffsetX + 'px'
     this.contentElem.style.top = this.contentOffsetY + 'px'
+    this.wasJustDragged = true
   }
 
   zoom(event) {
@@ -133,18 +139,47 @@ export default class extends Controller {
   }
 
   _adjustCursorPosition() {
-    this.cursorElem.style.top = (this.scale * this.cursorPos.row + 1) + 'px'
-    this.cursorElem.style.left = (this.scale * this.cursorPos.col + 1) + 'px'
+    let c = this._getCoordsByPixel(this.cursorPos)
+    this.cursorElem.style.left = (c.x + 1) + 'px'
+    this.cursorElem.style.top = (c.y + 1) + 'px'
   }
 
   _cursorVisible() {
     return this.scale >= CURSOR_MIN_SIZE + 2
   }
 
-  _getPixel(offsetX, offsetY) {
+  _getPixelByCoords(offsetX, offsetY) {
     let row = Math.floor(offsetY / this.scale)
     let col = Math.floor(offsetX / this.scale)
 
     return { row, col }
+  }
+
+  _getCoordsByPixel({ row, col }) {
+    return {
+      x: this.scale * this.cursorPos.col,
+      y: this.scale * this.cursorPos.row
+    }
+  }
+
+  _changePixel(pos, color) {
+    let ctx = this.canvasElem.getContext("2d");
+    let pixelImageData = ctx.createImageData(1, 1)
+    let offset = (pos.row * this.origWidth + pos.col) * 4
+    for (let j = 0; j < 3; j++) {
+      this.imgData.data[offset+j] = color[j]
+      pixelImageData.data[j] = color[j]
+    }
+    pixelImageData.data[3] = 255
+
+    let c = this._getCoordsByPixel(pos)
+
+    let bitMap = createImageBitmap(pixelImageData, {
+      resizeWidth: this.scale,
+      resizeHeight: this.scale,
+      resizeQuality: "pixelated"
+    }).then(bitMap => {
+      ctx.drawImage(bitMap, c.x, c.y)
+    })
   }
 }
