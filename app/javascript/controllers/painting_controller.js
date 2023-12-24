@@ -6,6 +6,8 @@ const CONTENT_SELECTOR = "#paintingContent"
 const CURSOR_SELECTOR = "#paintingCursor"
 
 export default class extends Controller {
+  static targets = [ "colorPicker" ]
+
   initialize() {
     this.dragging = false
     this.wasJustDragged = false
@@ -18,7 +20,6 @@ export default class extends Controller {
     this.cursorPos = { row: 0, col: 0 }
     this.origWidth = this.canvasElem.width
     this.origHeight = this.canvasElem.height
-    this.currentColor = [0, 0, 0]
 
     this._initImage()
 
@@ -41,7 +42,9 @@ export default class extends Controller {
       return
     }
 
-    this._changePixel(this.cursorPos, this.currentColor)
+    console.log(this.colorPickerTarget.value)
+
+    this._changePixel(this.cursorPos, this.colorPickerTarget.value)
   }
 
   dragStart(event) {
@@ -86,6 +89,10 @@ export default class extends Controller {
     }
   }
 
+  chooseColor(event) {
+    console.log(event)
+  }
+
   _initImage() {
     let ctx = this.canvasElem.getContext("2d");
     this.imgData = ctx.createImageData(this.origWidth, this.origHeight)
@@ -116,12 +123,12 @@ export default class extends Controller {
 
     let ctx = this.canvasElem.getContext("2d");
 
-    let bitMap = createImageBitmap(this.imgData, {
+    createImageBitmap(this.imgData, {
       resizeWidth: this.canvasElem.width,
       resizeHeight: this.canvasElem.height,
       resizeQuality: "pixelated"
     }).then(bitMap => {
-      ctx.drawImage(bitMap, 0, 0, bitMap.width, bitMap.height, 0, 0, this.canvasElem.width, this.canvasElem.height)
+      ctx.drawImage(bitMap, 0, 0)
     })
   }
 
@@ -162,7 +169,8 @@ export default class extends Controller {
     }
   }
 
-  _changePixel(pos, color) {
+  _changePixel(pos, hexColor) {
+    let color = hexToRGB(hexColor)
     let ctx = this.canvasElem.getContext("2d");
     let pixelImageData = ctx.createImageData(1, 1)
     let offset = (pos.row * this.origWidth + pos.col) * 4
@@ -174,7 +182,7 @@ export default class extends Controller {
 
     let c = this._getCoordsByPixel(pos)
 
-    let bitMap = createImageBitmap(pixelImageData, {
+    createImageBitmap(pixelImageData, {
       resizeWidth: this.scale,
       resizeHeight: this.scale,
       resizeQuality: "pixelated"
@@ -182,4 +190,9 @@ export default class extends Controller {
       ctx.drawImage(bitMap, c.x, c.y)
     })
   }
+}
+
+
+function hexToRGB(hex) {
+  return [1, 3, 5].map(offset => parseInt(hex.slice(offset, offset+2), 16))
 }

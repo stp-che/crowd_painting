@@ -14,3 +14,13 @@ h2
     ]
 
     #paintingCursor data-action="click->painting#clickPixel"
+
+  #controlPanel.container
+    form.row.g-3
+      .col-auto
+        label.col-form-label for="colorPicker" Current color:
+      .col-auto
+        input#colorPicker.form-control[
+          type="color"
+          data-painting-target="colorPicker"
+        ]
