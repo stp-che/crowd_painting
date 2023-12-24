@@ -6,14 +6,21 @@ h2
   data-controller="painting"
   data-action="mousemove->painting#drag mouseup@window->painting#dragStop wheel->painting#zoom"
 ]
-  #paintingContent data-action="mousedown->painting#dragStart"
+  #paintingContent[
+    data-painting-target="content"
+    data-action="mousedown->painting#dragStart"
+  ]
     canvas[
+      data-painting-target="canvas"
       width=@painting.width.to_s
       height=@painting.height.to_s
       data-action="mousemove->painting#moveCursor click->painting#clickPixel"
     ]
 
-    #paintingCursor data-action="click->painting#clickPixel"
+    #paintingCursor[
+      data-painting-target="cursor"
+      data-action="click->painting#clickPixel"
+    ]
 
   #controlPanel.container
     form.row.g-3

@@ -1,12 +1,10 @@
 import { Controller } from "@hotwired/stimulus"
 
-const MAX_SCALE = 30
-const CURSOR_MIN_SIZE = 5
-const CONTENT_SELECTOR = "#paintingContent"
-const CURSOR_SELECTOR = "#paintingCursor"
+const MAX_SCALE = 30,
+      CURSOR_MIN_SIZE = 5
 
 export default class extends Controller {
-  static targets = [ "colorPicker" ]
+  static targets = [ "content", "canvas", "cursor", "colorPicker" ]
 
   initialize() {
     this.dragging = false
@@ -14,12 +12,9 @@ export default class extends Controller {
     this.scale = 1
     this.contentOffsetX = 0
     this.contentOffsetY = 0
-    this.contentElem = this.element.querySelector(CONTENT_SELECTOR)
-    this.canvasElem = this.contentElem.querySelector('canvas')
-    this.cursorElem = this.element.querySelector(CURSOR_SELECTOR)
     this.cursorPos = { row: 0, col: 0 }
-    this.origWidth = this.canvasElem.width
-    this.origHeight = this.canvasElem.height
+    this.origWidth = this.canvasTarget.width
+    this.origHeight = this.canvasTarget.height
 
     this._initImage()
 
@@ -42,8 +37,6 @@ export default class extends Controller {
       return
     }
 
-    console.log(this.colorPickerTarget.value)
-
     this._changePixel(this.cursorPos, this.colorPickerTarget.value)
   }
 
@@ -62,8 +55,8 @@ export default class extends Controller {
 
     this.contentOffsetX = this.contentOffsetX + event.movementX
     this.contentOffsetY = this.contentOffsetY + event.movementY
-    this.contentElem.style.left = this.contentOffsetX + 'px'
-    this.contentElem.style.top = this.contentOffsetY + 'px'
+    this.contentTarget.style.left = this.contentOffsetX + 'px'
+    this.contentTarget.style.top = this.contentOffsetY + 'px'
     this.wasJustDragged = true
   }
 
@@ -94,7 +87,7 @@ export default class extends Controller {
   }
 
   _initImage() {
-    let ctx = this.canvasElem.getContext("2d");
+    let ctx = this.canvasTarget.getContext("2d");
     this.imgData = ctx.createImageData(this.origWidth, this.origHeight)
     for (let i = 0; i < this.imgData.data.length; i += 4) {
       let row = Math.floor(i / 4 / this.origWidth)
@@ -118,14 +111,14 @@ export default class extends Controller {
   }
 
   _renderContet() {
-    this.canvasElem.width = this.scale * this.origWidth
-    this.canvasElem.height = this.scale * this.origHeight
+    this.canvasTarget.width = this.scale * this.origWidth
+    this.canvasTarget.height = this.scale * this.origHeight
 
-    let ctx = this.canvasElem.getContext("2d");
+    let ctx = this.canvasTarget.getContext("2d");
 
     createImageBitmap(this.imgData, {
-      resizeWidth: this.canvasElem.width,
-      resizeHeight: this.canvasElem.height,
+      resizeWidth: this.canvasTarget.width,
+      resizeHeight: this.canvasTarget.height,
       resizeQuality: "pixelated"
     }).then(bitMap => {
       ctx.drawImage(bitMap, 0, 0)
@@ -134,21 +127,21 @@ export default class extends Controller {
 
   _adjustCursor() {
     let size = this.scale - 2
-    this.cursorElem.style.width = size + 'px'
-    this.cursorElem.style.height = size + 'px'
+    this.cursorTarget.style.width = size + 'px'
+    this.cursorTarget.style.height = size + 'px'
     let visibility = 'hidden'
     if (this._cursorVisible()) {
       visibility = 'visible'
     }
-    this.cursorElem.style.visibility = visibility
+    this.cursorTarget.style.visibility = visibility
 
     this._adjustCursorPosition()
   }
 
   _adjustCursorPosition() {
     let c = this._getCoordsByPixel(this.cursorPos)
-    this.cursorElem.style.left = (c.x + 1) + 'px'
-    this.cursorElem.style.top = (c.y + 1) + 'px'
+    this.cursorTarget.style.left = (c.x + 1) + 'px'
+    this.cursorTarget.style.top = (c.y + 1) + 'px'
   }
 
   _cursorVisible() {
@@ -171,7 +164,7 @@ export default class extends Controller {
 
   _changePixel(pos, hexColor) {
     let color = hexToRGB(hexColor)
-    let ctx = this.canvasElem.getContext("2d");
+    let ctx = this.canvasTarget.getContext("2d");
     let pixelImageData = ctx.createImageData(1, 1)
     let offset = (pos.row * this.origWidth + pos.col) * 4
     for (let j = 0; j < 3; j++) {
