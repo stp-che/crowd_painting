@@ -30,30 +30,6 @@ RSpec.describe 'Paintings', type: :request do
         expect(response).to have_http_status(302)
         expect(response).to redirect_to(paintings_path)
       end
-
-      describe 'painting' do
-        let(:painting) { Painting.first }
-
-        before { post_painting }
-
-        it 'belongs to current user'
-
-        it 'has specified size'
-
-        it 'has specified title'
-
-        context 'when title is nil' do
-          it 'does not have title'
-        end
-
-        context 'when title is blank' do
-          it 'does not have title'
-        end
-      end
-
-      context 'when size is unknown' do
-        it 'does not create painting'
-      end
     end
   end
 end

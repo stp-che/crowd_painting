@@ -11,5 +11,6 @@ Rails.application.routes.draw do
 
   resources :paintings, only: %i[index create show] do
     resource :canvas, only: %i[show]
+    resources :pixel_changes, only: %i[create]
   end
 end
