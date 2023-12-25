@@ -59,6 +59,10 @@ module PixelData
       "##{hex}"
     end
 
+    def ==(other)
+      other.kind_of?(Color) && @binary_str == other.binary_str
+    end
+
     class InvalidBinary < StandardError
       def initialize(binary_str)
         @binary_str = binary_str

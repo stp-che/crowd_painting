@@ -4,3 +4,5 @@ en:
       errors:
         is_blank: is blank
         wrong_size: wrong size
+        out_of_bounds: out of bounds
+        invalid_color: invalid color
