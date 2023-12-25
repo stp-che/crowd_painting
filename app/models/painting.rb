@@ -6,4 +6,5 @@ class Painting < ApplicationRecord
   }.freeze
 
   belongs_to :user
+  has_many :pixels
 end

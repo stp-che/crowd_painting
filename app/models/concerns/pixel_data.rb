@@ -52,7 +52,11 @@ module PixelData
     end
 
     def as_json
-      @binary_str.unpack1('H*')
+      hex
+    end
+
+    def hex_str
+      "##{hex}"
     end
 
     class InvalidBinary < StandardError
@@ -73,6 +77,12 @@ module PixelData
       def message
         "invalid color string #{@str.inspect}"
       end
+    end
+
+    private
+
+    def hex
+      @binary_str.unpack1('H*')
     end
   end
 end

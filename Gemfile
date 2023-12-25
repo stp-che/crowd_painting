@@ -77,3 +77,5 @@ gem "slim", "~> 5.2"
 gem "dry-monads", "~> 1.6"
 
 gem "sass-rails"
+
+gem "chunky_png", "~> 1.4"

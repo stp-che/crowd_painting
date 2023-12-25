@@ -9,5 +9,7 @@ Rails.application.routes.draw do
   # Defines the root path route ("/")
   root "paintings#index"
 
-  resources :paintings, only: %i[index create show]
+  resources :paintings, only: %i[index create show] do
+    resource :canvas, only: %i[show]
+  end
 end

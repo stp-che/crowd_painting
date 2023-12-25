@@ -11,10 +11,15 @@
     display: inline-block;
     cursor: pointer;
 
+    img {
+      display: none;
+    }
+
     canvas {
       top: 0;
       left: 0;
       position: absolute;
+      border: 1px solid #606060;
     }
 
     #paintingCursor {

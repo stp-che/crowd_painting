@@ -71,4 +71,14 @@ RSpec.describe PixelData::Color do
       expect(color.as_json).to eq '000000'
     end
   end
+
+  describe '#hex_str' do
+    it 'returns string form of color' do
+      color = described_class.new "\x01\x02\x03"
+      expect(color.hex_str).to eq '#010203'
+
+      color = described_class.new "\x00\x00\x00"
+      expect(color.hex_str).to eq '#000000'
+    end
+  end
 end

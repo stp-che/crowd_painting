@@ -10,6 +10,12 @@ h2
     data-painting-target="content"
     data-action="mousedown->painting#dragStart"
   ]
+    img[
+      src=painting_canvas_path(@painting)
+      data-painting-target="image"
+      data-action="load->painting#imageLoaded"
+    ]
+
     canvas[
       data-painting-target="canvas"
       width=@painting.width.to_s

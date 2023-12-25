@@ -4,7 +4,7 @@ const MAX_SCALE = 30,
       CURSOR_MIN_SIZE = 5
 
 export default class extends Controller {
-  static targets = [ "content", "canvas", "cursor", "colorPicker" ]
+  static targets = [ "content", "canvas", "cursor", "colorPicker", "image" ]
 
   initialize() {
     this.dragging = false
@@ -15,10 +15,12 @@ export default class extends Controller {
     this.cursorPos = { row: 0, col: 0 }
     this.origWidth = this.canvasTarget.width
     this.origHeight = this.canvasTarget.height
+    this.canvasCtx = this.canvasTarget.getContext("2d");
+  }
 
-    this._initImage()
-
-    this._renderContet()
+  imageLoaded() {
+    this.canvasCtx.drawImage(this.imageTarget, 0, 0);
+    this.imgData = this.canvasCtx.getImageData(0, 0, this.origWidth, this.origHeight)
   }
 
   moveCursor(event) {
@@ -82,39 +84,11 @@ export default class extends Controller {
     }
   }
 
-  chooseColor(event) {
-    console.log(event)
-  }
-
-  _initImage() {
-    let ctx = this.canvasTarget.getContext("2d");
-    this.imgData = ctx.createImageData(this.origWidth, this.origHeight)
-    for (let i = 0; i < this.imgData.data.length; i += 4) {
-      let row = Math.floor(i / 4 / this.origWidth)
-      let col = (i / 4) % this.origWidth
-      let red = Math.round(255 * row / this.origHeight)
-      let blue = Math.round(255 * col / this.origWidth)
-      let shift = 255 - Math.max(red, blue)
-      let rgb = [red + shift, shift, blue + shift]
-      for (let k = 0; k < rgb.length; k++) {
-        if (rgb[k] < 0) {
-          rgb[k] = 0
-        }
-        this.imgData.data[i + k] = rgb[k]
-      }
-      this.imgData.data[i + 3] = 255
-    }
-
-    this.imgData.data[0] = 0
-    this.imgData.data[1] = 0
-    this.imgData.data[2] = 0
-  }
-
   _renderContet() {
     this.canvasTarget.width = this.scale * this.origWidth
     this.canvasTarget.height = this.scale * this.origHeight
 
-    let ctx = this.canvasTarget.getContext("2d");
+    let ctx = this.canvasCtx
 
     createImageBitmap(this.imgData, {
       resizeWidth: this.canvasTarget.width,
@@ -140,8 +114,8 @@ export default class extends Controller {
 
   _adjustCursorPosition() {
     let c = this._getCoordsByPixel(this.cursorPos)
-    this.cursorTarget.style.left = (c.x + 1) + 'px'
-    this.cursorTarget.style.top = (c.y + 1) + 'px'
+    this.cursorTarget.style.left = (c.x + 2) + 'px'
+    this.cursorTarget.style.top = (c.y + 2) + 'px'
   }
 
   _cursorVisible() {
@@ -164,7 +138,7 @@ export default class extends Controller {
 
   _changePixel(pos, hexColor) {
     let color = hexToRGB(hexColor)
-    let ctx = this.canvasTarget.getContext("2d");
+    let ctx = this.canvasCtx
     let pixelImageData = ctx.createImageData(1, 1)
     let offset = (pos.row * this.origWidth + pos.col) * 4
     for (let j = 0; j < 3; j++) {
