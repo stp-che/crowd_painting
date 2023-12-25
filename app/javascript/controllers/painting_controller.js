@@ -1,10 +1,12 @@
 import { Controller } from "@hotwired/stimulus"
+import api from '../api'
 
 const MAX_SCALE = 30,
       CURSOR_MIN_SIZE = 5
 
 export default class extends Controller {
   static targets = [ "content", "canvas", "cursor", "colorPicker", "image" ]
+  static values = { canvasUrl: String, pixelChangesUrl: String }
 
   initialize() {
     this.dragging = false
@@ -16,6 +18,11 @@ export default class extends Controller {
     this.origWidth = this.canvasTarget.width
     this.origHeight = this.canvasTarget.height
     this.canvasCtx = this.canvasTarget.getContext("2d");
+  }
+
+  connect() {
+    // assign src after the onload handler is set
+    this.imageTarget.src = this.canvasUrlValue
   }
 
   imageLoaded() {
@@ -39,7 +46,8 @@ export default class extends Controller {
       return
     }
 
-    this._changePixel(this.cursorPos, this.colorPickerTarget.value)
+    this._postPixelChange(this.cursorPos, this.colorPickerTarget.value)
+      .then(_ => this._changePixel(this.cursorPos, this.colorPickerTarget.value))
   }
 
   dragStart(event) {
@@ -134,6 +142,13 @@ export default class extends Controller {
       x: this.scale * this.cursorPos.col,
       y: this.scale * this.cursorPos.row
     }
+  }
+
+  _postPixelChange(pos, hexColor) {
+    let { row, col } = pos
+    let color = hexColor.slice(1,7)
+
+    return api.postJSON(this.pixelChangesUrlValue, { row, col, color })
   }
 
   _changePixel(pos, hexColor) {

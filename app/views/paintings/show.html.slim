@@ -4,6 +4,8 @@ h2
 
 #paintingEditor[
   data-controller="painting"
+  data-painting-pixel-changes-url-value=painting_pixel_changes_path(@painting)
+  data-painting-canvas-url-value=painting_canvas_path(@painting)
   data-action="mousemove->painting#drag mouseup@window->painting#dragStop wheel->painting#zoom"
 ]
   #paintingContent[
@@ -11,7 +13,6 @@ h2
     data-action="mousedown->painting#dragStart"
   ]
     img[
-      src=painting_canvas_path(@painting)
       data-painting-target="image"
       data-action="load->painting#imageLoaded"
     ]
