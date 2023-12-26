@@ -46,8 +46,18 @@ export default class extends Controller {
       return
     }
 
-    this._postPixelChange(this.cursorPos, this.colorPickerTarget.value)
-      .then(_ => this._changePixel(this.cursorPos, this.colorPickerTarget.value))
+    let pos = this.cursorPos, 
+        color = this.colorPickerTarget.value,
+        self = this
+
+    this._postPixelChange(pos, color)
+      .then(resp => {
+        if (resp.ok) {
+          self._changePixel(pos, color)
+        } else {
+          resp.text().then(text => console.warn(resp.status, text))
+        }
+      })
   }
 
   dragStart(event) {
