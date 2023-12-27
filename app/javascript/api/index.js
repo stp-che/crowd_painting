@@ -12,4 +12,12 @@ function postJSON(url, data) {
   })
 }
 
-export default { postJSON };
+function getJSON(url) {
+  return fetch(url, {
+    headers: {
+      'Accept': 'application/json'
+    },
+  }).then(resp => resp.json())
+}
+
+export default { getJSON, postJSON };

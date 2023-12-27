@@ -2,11 +2,12 @@ import { Controller } from "@hotwired/stimulus"
 import api from '../api'
 
 const MAX_SCALE = 30,
-      CURSOR_MIN_SIZE = 5
+      CURSOR_MIN_SIZE = 5,
+      CHANGES_POLLING_INTERVAL_MS = 1000
 
 export default class extends Controller {
   static targets = [ "content", "canvas", "cursor", "colorPicker", "image" ]
-  static values = { canvasUrl: String, pixelChangesUrl: String }
+  static values = { canvasUrl: String, pixelChangesUrl: String, lastPixelChangeAt: String, pixelsUrl: String }
 
   initialize() {
     this.dragging = false
@@ -23,6 +24,7 @@ export default class extends Controller {
   connect() {
     // assign src after the onload handler is set
     this.imageTarget.src = this.canvasUrlValue
+    this._startChangesPolling()
   }
 
   imageLoaded() {
@@ -47,13 +49,12 @@ export default class extends Controller {
     }
 
     let pos = this.cursorPos, 
-        color = this.colorPickerTarget.value,
-        self = this
+        color = this.colorPickerTarget.value
 
     this._postPixelChange(pos, color)
       .then(resp => {
         if (resp.ok) {
-          self._changePixel(pos, color)
+          this._changePixel(pos, color)
         } else {
           resp.text().then(text => console.warn(resp.status, text))
         }
@@ -149,8 +150,8 @@ export default class extends Controller {
 
   _getCoordsByPixel({ row, col }) {
     return {
-      x: this.scale * this.cursorPos.col,
-      y: this.scale * this.cursorPos.row
+      x: this.scale * col,
+      y: this.scale * row
     }
   }
 
@@ -181,6 +182,36 @@ export default class extends Controller {
     }).then(bitMap => {
       ctx.drawImage(bitMap, c.x, c.y)
     })
+  }
+
+  _startChangesPolling() {
+    this._poll()
+  }
+
+  _poll() {
+    setTimeout(
+      () => {
+        this._getChanges()
+        this._poll()
+      },
+      CHANGES_POLLING_INTERVAL_MS
+    )
+  }
+
+  _getChanges() {
+    let url = this.pixelsUrlValue + '?after=' + this.lastPixelChangeAtValue
+    api.getJSON(url).then(
+      (json) => {
+        json.forEach((px) => {
+          if (this.lastPixelChangeAtValue < px.updated_at) {
+            this.lastPixelChangeAtValue = px.updated_at
+          }
+
+          this._changePixel({ row: px.row, col: px.col }, '#'+px.color)
+        })
+      },
+      (err) => console.error(err)
+    )
   }
 }
 

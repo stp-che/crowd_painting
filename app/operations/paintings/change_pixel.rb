@@ -1,7 +1,7 @@
 module Paintings
   class ChangePixel < ::BaseOperation
     def call(user, painting_id, params)
-      painting = Painting.find_by(id: painting_id)
+      painting = Painting.find(painting_id)
       pixel_params = yield validate_params(painting, params)
       ApplicationRecord.transaction do
         PixelChange.create! user: user, painting_id: painting_id, **pixel_params

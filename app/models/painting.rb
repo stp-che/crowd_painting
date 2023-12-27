@@ -7,4 +7,5 @@ class Painting < ApplicationRecord
 
   belongs_to :user
   has_many :pixels
+  has_many :pixel_changes
 end

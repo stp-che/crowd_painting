@@ -5,7 +5,9 @@ h2
 #paintingEditor[
   data-controller="painting"
   data-painting-pixel-changes-url-value=painting_pixel_changes_path(@painting)
+  data-painting-pixels-url-value=painting_pixels_path(@painting)
   data-painting-canvas-url-value=painting_canvas_path(@painting)
+  data-painting-last-pixel-change-at-value=@last_pixel_change_at.as_json
   data-action="mousemove->painting#drag mouseup@window->painting#dragStop wheel->painting#zoom"
 ]
   #paintingContent[

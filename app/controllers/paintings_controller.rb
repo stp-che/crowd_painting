@@ -20,6 +20,8 @@ class PaintingsController < ApplicationController
       redirect_to paintings_path
       return
     end
+
+    @last_pixel_change_at = @painting.pixel_changes.maximum(:created_at)
   end
 
   private
